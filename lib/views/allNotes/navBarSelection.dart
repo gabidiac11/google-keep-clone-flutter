@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class _MyAppBar extends State<NavBarSelection> {
   Widget withPadding(Widget w) {
-    return Padding(padding: const EdgeInsets.fromLTRB(20, 1, 0, 1), child: w);
+    return Padding(padding: const EdgeInsets.fromLTRB(10, 0, 10, 0), child: w);
   }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: Row(children: [
+      title: Row(children: [
         withPadding(GestureDetector(
             onTap: () => widget.cancel(), child: const Icon(Icons.close))),
         withPadding(Text(widget.numOfItems.toString())),
