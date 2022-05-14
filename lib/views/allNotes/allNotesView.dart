@@ -45,31 +45,31 @@ class _AllNotesViewState extends State<AllNotesView> {
           "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
     },
     {
-      'id': 5,
+      'id': 6,
       'title': "Datorii (de recuperat)",
       'text':
           "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
     },
     {
-      'id': 5,
+      'id': 7,
       'title': "Datorii (de recuperat)",
       'text':
           "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
     },
     {
-      'id': 5,
+      'id': 8,
       'title': "Datorii (de recuperat)",
       'text':
           "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
     },
     {
-      'id': 5,
+      'id': 9,
       'title': "Datorii (de recuperat)",
       'text':
           "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
     },
     {
-      'id': 5,
+      'id': 10,
       'title': "Datorii (de recuperat)",
       'text':
           "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
@@ -98,7 +98,7 @@ class _AllNotesViewState extends State<AllNotesView> {
                         title: e['title'],
                         onPress: () => onPressNote(e['id']),
                         onLongPressEnd: (d) => onLongPressEnd(e['id']),
-                        isSelected: selectedIds[e['id']] != Null,
+                        isSelected: selectedIds[e['id']] == true,
                         text: e['text'],
                       ))
                   .toList(),
@@ -126,7 +126,7 @@ class _AllNotesViewState extends State<AllNotesView> {
       if(!selectionModeActive) {
         selectionModeActive = true;
       }
-      if(selectedIds[itemId] != null) {
+      if(selectedIds[itemId] == true) {
         selectedIds.remove(itemId);
         return;
       }
@@ -137,7 +137,7 @@ class _AllNotesViewState extends State<AllNotesView> {
   onDeleteSelected() {
     setState(() {
       //TODO: delete from db
-      notes = notes.where((element) => !selectedIds[element]).toList();
+      notes = notes.where((element) => selectedIds[element['id']] != true).toList();
       selectedIds = {};
       selectionModeActive = false;
     });
@@ -155,7 +155,7 @@ class _AllNotesViewState extends State<AllNotesView> {
       return;
     }
     setState(() {
-      if(selectedIds[itemId] != null) {
+      if(selectedIds[itemId] == true) {
         selectedIds.remove(itemId);
       } else {
         selectedIds[itemId] = true;
