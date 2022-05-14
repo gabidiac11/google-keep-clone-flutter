@@ -1,22 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class MyAppBar extends AppBar {
-  MyAppBar({Key? key}) : super(key: key);
+  final bool isListLayout;
+  final Function setIsListLayout;
+
+  MyAppBar(this.isListLayout, this.setIsListLayout, {Key? key}) : super(key: key);
+
   @override
   State<MyAppBar> createState() => _MyAppBar();
 }
 
 class _MyAppBar extends State<MyAppBar> {
-  bool _useListLayout = false;
-
-  void _setLayoutType(bool value) {
-    setState(() {
-      _useListLayout = value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     const dropdownOptions = ['logout'];
@@ -54,10 +49,10 @@ class _MyAppBar extends State<MyAppBar> {
       actions: [
         IconButton(
           icon: Icon(
-            _useListLayout ? Icons.grid_view_outlined : Icons.list_outlined,
+            widget.isListLayout ? Icons.grid_view_outlined : Icons.list_outlined,
           ),
           splashColor: Colors.white,
-          onPressed: () => _setLayoutType(!_useListLayout),
+          onPressed: () => widget.setIsListLayout(!widget.isListLayout),
         ),
         Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),

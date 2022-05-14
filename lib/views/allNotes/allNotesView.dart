@@ -76,8 +76,9 @@ class _AllNotesViewState extends State<AllNotesView> {
     }
   ];
 
-  bool selectionModeActive = false;
+  var selectionModeActive = false;
   var selectedIds = {};
+  var isListLayout = false;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +86,7 @@ class _AllNotesViewState extends State<AllNotesView> {
       appBar: selectionModeActive
           ? NavBarSelection(
               selectedIds.keys.length, onDeleteSelected, onCancelSelection)
-          : MyAppBar(),
+          : MyAppBar(isListLayout, setIsListLayout),
       backgroundColor: Colors.grey,
       body: SingleChildScrollView(
         child: Column(children: [
@@ -93,7 +94,7 @@ class _AllNotesViewState extends State<AllNotesView> {
             padding: const EdgeInsets.fromLTRB(5, 25, 5, 22),
             child: StaggeredGrid.count(
               crossAxisCount:
-                  determineItemsPerRow(MediaQuery.of(context).size.width),
+                   isListLayout ? 1 : determineItemsPerRow(MediaQuery.of(context).size.width),
               mainAxisSpacing: 2,
               crossAxisSpacing: 4,
               children: notes
@@ -165,6 +166,12 @@ class _AllNotesViewState extends State<AllNotesView> {
       } else {
         selectedIds[itemId] = true;
       }
+    });
+  }
+
+  setIsListLayout(value) {
+    setState(() {
+      isListLayout = value;
     });
   }
 }
