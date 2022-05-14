@@ -34,19 +34,19 @@ class _AllNotesViewState extends State<AllNotesView> {
     },
     {
       'id': 4,
-      'title': "Datorii (de recuperat)",
+      'title': "Datorii1 (de recuperat)",
       'text':
           "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
     },
     {
       'id': 5,
-      'title': "Datorii (de recuperat)",
+      'title': "Datorii2 (de recuperat)",
       'text':
           "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
     },
     {
       'id': 6,
-      'title': "Datorii (de recuperat)",
+      'title': "Datorii3 (de recuperat)",
       'text':
           "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
     },
@@ -79,34 +79,70 @@ class _AllNotesViewState extends State<AllNotesView> {
   var selectionModeActive = false;
   var selectedIds = {};
   var isListLayout = false;
+  var searchTxt = "";
+  TextEditingController searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  List<Map<String, dynamic>> getListFiltered() {
+    return searchTxt == ""
+        ? notes
+        : notes.where((i) {
+      return ['title', 'text'].any((property) {
+        return (i[property] is String) &&
+            i[property] != null &&
+            (i[property] as String).toLowerCase().contains(searchTxt);
+      });
+    }).toList();
+  }
+
+  @override
+  void initState() {
+    searchController.addListener(() {
+      setState(() {
+        searchTxt = searchController.text.toLowerCase();
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    var notesFiltered = getListFiltered();
+
     return Scaffold(
       appBar: selectionModeActive
           ? NavBarSelection(
               selectedIds.keys.length, onDeleteSelected, onCancelSelection)
-          : MyAppBar(isListLayout, setIsListLayout),
+          : MyAppBar(isListLayout, setIsListLayout, searchController),
       backgroundColor: Colors.grey,
       body: SingleChildScrollView(
         child: Column(children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(5, 25, 5, 22),
-            child: StaggeredGrid.count(
-              crossAxisCount:
-                   isListLayout ? 1 : determineItemsPerRow(MediaQuery.of(context).size.width),
-              mainAxisSpacing: 2,
-              crossAxisSpacing: 4,
-              children: notes
-                  .map((e) => NoteItem(
-                        title: e['title'],
-                        onPress: () => onPressNote(e['id']),
-                        onLongPressEnd: (d) => onLongPressEnd(e['id']),
-                        isSelected: selectedIds[e['id']] == true,
-                        text: e['text'],
-                      ))
-                  .toList(),
-            ),
+            child: notesFiltered.isEmpty
+                ? const Text("No item.")
+                : StaggeredGrid.count(
+                    crossAxisCount: isListLayout
+                        ? 1
+                        : determineItemsPerRow(
+                            MediaQuery.of(context).size.width),
+                    mainAxisSpacing: 2,
+                    crossAxisSpacing: 4,
+                    children: notesFiltered
+                        .map((e) => NoteItem(
+                              title: e['title'],
+                              onPress: () => onPressNote(e['id']),
+                              onLongPressEnd: (d) => onLongPressEnd(e['id']),
+                              isSelected: selectedIds[e['id']] == true,
+                              text: e['text'],
+                            ))
+                        .toList(),
+                  ),
           )
         ]),
       ),

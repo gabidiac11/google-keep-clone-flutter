@@ -4,8 +4,11 @@ import 'package:flutter_svg/svg.dart';
 class MyAppBar extends AppBar {
   final bool isListLayout;
   final Function setIsListLayout;
+  final TextEditingController searchController;
 
-  MyAppBar(this.isListLayout, this.setIsListLayout, {Key? key}) : super(key: key);
+  MyAppBar(this.isListLayout, this.setIsListLayout, this.searchController,
+      {Key? key})
+      : super(key: key);
 
   @override
   State<MyAppBar> createState() => _MyAppBar();
@@ -28,11 +31,12 @@ class _MyAppBar extends State<MyAppBar> {
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.clear),
                   onPressed: () {
-                    /* Clear the search field */
+                    widget.searchController.text = "";
                   },
                 ),
                 hintText: 'Search...',
                 border: InputBorder.none),
+            controller: widget.searchController,
           ),
         ),
       ),
@@ -49,7 +53,9 @@ class _MyAppBar extends State<MyAppBar> {
       actions: [
         IconButton(
           icon: Icon(
-            widget.isListLayout ? Icons.grid_view_outlined : Icons.list_outlined,
+            widget.isListLayout
+                ? Icons.grid_view_outlined
+                : Icons.list_outlined,
           ),
           splashColor: Colors.white,
           onPressed: () => widget.setIsListLayout(!widget.isListLayout),
