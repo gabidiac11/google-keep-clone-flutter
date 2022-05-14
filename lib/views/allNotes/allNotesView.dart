@@ -82,7 +82,10 @@ class _AllNotesViewState extends State<AllNotesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: selectionModeActive ? NavBarSelection(selectedIds.keys.length, onDeleteSelected, onCancelSelection) : MyAppBar(),
+      appBar: selectionModeActive
+          ? NavBarSelection(
+              selectedIds.keys.length, onDeleteSelected, onCancelSelection)
+          : MyAppBar(),
       backgroundColor: Colors.grey,
       body: SingleChildScrollView(
         child: Column(children: [
@@ -123,10 +126,10 @@ class _AllNotesViewState extends State<AllNotesView> {
 
   onLongPressEnd(itemId) {
     setState(() {
-      if(!selectionModeActive) {
+      if (!selectionModeActive) {
         selectionModeActive = true;
       }
-      if(selectedIds[itemId] == true) {
+      if (selectedIds[itemId] == true) {
         selectedIds.remove(itemId);
         return;
       }
@@ -137,25 +140,27 @@ class _AllNotesViewState extends State<AllNotesView> {
   onDeleteSelected() {
     setState(() {
       //TODO: delete from db
-      notes = notes.where((element) => selectedIds[element['id']] != true).toList();
+      notes =
+          notes.where((element) => selectedIds[element['id']] != true).toList();
       selectedIds = {};
       selectionModeActive = false;
     });
-
   }
+
   onCancelSelection() {
     setState(() {
       selectedIds = {};
       selectionModeActive = false;
     });
   }
+
   onPressNote(itemId) {
-    if(!selectionModeActive) {
+    if (!selectionModeActive) {
       //TODO: navigate to edit
       return;
     }
     setState(() {
-      if(selectedIds[itemId] == true) {
+      if (selectedIds[itemId] == true) {
         selectedIds.remove(itemId);
       } else {
         selectedIds[itemId] = true;
