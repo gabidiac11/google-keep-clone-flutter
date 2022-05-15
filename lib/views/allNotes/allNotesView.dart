@@ -26,7 +26,7 @@ class _AllNotesViewState extends State<AllNotesView> {
   var searchTxt = "";
   TextEditingController searchController = TextEditingController();
 
-  var isLoadingList = false;
+  var isLoadingList = true;
 
   @override
   void dispose() {
@@ -61,12 +61,7 @@ class _AllNotesViewState extends State<AllNotesView> {
         onInit: (store) {
           Timer(const Duration(seconds: 1), () {
             setState(() {
-              isLoadingList = true;
-            });
-            Timer(const Duration(seconds: 3), () {
-              setState(() {
-                isLoadingList = false;
-              });
+              isLoadingList = false;
             });
           });
         },

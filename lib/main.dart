@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:redux_persist/redux_persist.dart';
+import 'package:redux_persist_flutter/redux_persist_flutter.dart';
 import 'package:untitled2/models.dart';
 import 'package:untitled2/store/actions.dart';
 import 'package:untitled2/theme/SharedPreferences.dart';
@@ -9,14 +11,22 @@ import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'store/reducer.dart';
 import 'package:untitled2/store/reducer.dart';
-import 'package:redux_thunk/redux_thunk.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final persistor = Persistor<AppState>(
+    storage: FlutterStorage(),
+    serializer: JsonSerializer<AppState>(AppState.fromJson),
+  );
+
+  final initialState = await persistor.load();
+
   final Store<AppState> store = Store<AppState>(
     reducer,
-    initialState: AppState.genInitialState(),
-    middleware: [thunkMiddleware],
+    initialState: initialState ?? AppState.genInitialState(),
+    middleware: [persistor.createMiddleware()],
   );
   runApp(MyApp(store));
 }

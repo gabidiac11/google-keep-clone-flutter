@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled2/theme/SharedPreferences.dart';
@@ -21,7 +22,7 @@ class _MyAppBar extends State<MyAppBar> {
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
     final dropdownOptions = [
-      {'value': 'logout', 'text': 'Log out'},
+      {'value': 'exit', 'text': 'Exit'},
       {
         'value': 'darkMode',
         'text': themeChange.darkTheme ? "Dark Off" : "Dark On"
@@ -84,7 +85,7 @@ class _MyAppBar extends State<MyAppBar> {
                 selectedItemBuilder: (BuildContext c) => dropdownOptions
                     .map((e) => const Padding(
                         padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        child: Icon(Icons.account_circle)))
+                        child: Icon(Icons.settings)))
                     .toList(),
                 items: dropdownOptions.map((item) {
                   return DropdownMenuItem(
@@ -93,8 +94,8 @@ class _MyAppBar extends State<MyAppBar> {
                   );
                 }).toList(),
                 onChanged: (value) {
-                  if (value == "logout") {
-                    print("log out clicked");
+                  if (value == "exit") {
+                    SystemNavigator.pop();
                     return;
                   }
                   if (value == "darkMode") {
