@@ -40,6 +40,8 @@ dependencies:
   redux: ^5.0.0
   redux_thunk: ^0.4.0
   uuid: ^3.0.6
+  shared_preferences: ^2.0.15
+  provider: ^6.0.2
 
 dev_dependencies:
   flutter_test:

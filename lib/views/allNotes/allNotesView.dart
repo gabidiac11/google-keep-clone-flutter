@@ -76,7 +76,7 @@ class _AllNotesViewState extends State<AllNotesView> {
                   ? NavBarSelection(selectedIds.keys.length,
                       () => onDeleteSelected(model), onCancelSelection)
                   : MyAppBar(isListLayout, setIsListLayout, searchController),
-              backgroundColor: Colors.grey,
+              backgroundColor: Theme.of(context).backgroundColor,
               body: SingleChildScrollView(
                 child: Column(children: [
                   Padding(
@@ -110,7 +110,8 @@ class _AllNotesViewState extends State<AllNotesView> {
               floatingActionButton: FloatingActionButton(
                 onPressed: () => Navigator.pushNamed(context, '/addOrEdit'),
                 tooltip: 'Add note',
-                child: const Icon(Icons.add),
+                backgroundColor: Theme.of(context).canvasColor,
+                child: Icon(Icons.add, color: Theme.of(context).primaryIconTheme.color),
               ),
             ));
   }

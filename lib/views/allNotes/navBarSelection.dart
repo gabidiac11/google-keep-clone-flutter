@@ -13,7 +13,6 @@ class _MyAppBar extends State<NavBarSelection> {
             onTap: () => widget.cancel(), child: const Icon(Icons.close))),
         withPadding(Text(widget.numOfItems.toString())),
       ]),
-      backgroundColor: Colors.black,
       actions: [
         withPadding(GestureDetector(
             onTap: () => widget.delete(), child: const Icon(Icons.delete)))

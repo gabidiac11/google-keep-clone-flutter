@@ -17,8 +17,7 @@ class _MyAppBar extends State<MyAppBar> {
               onTap: () => Navigator.pop(context),
               child: const Icon(Icons.arrow_back)),
         )
-      ]),
-      backgroundColor: Colors.black,
+      ])
     );
   }
 }

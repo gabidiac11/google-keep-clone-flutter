@@ -63,28 +63,26 @@ class _AddOrEditNoteViewState extends State<AddOrEditNoteView> {
     return StoreConnector<AppState, NotesViewModel>(
         converter: (store) => NotesViewModel.fromStore(context, store),
         builder: (context, model) => Scaffold(
-              backgroundColor: Colors.black26,
+              backgroundColor: Theme.of(context).primaryColor,
               appBar: MyAppBar(),
               body: Padding(
                   padding: const EdgeInsets.all(16),
                   child: SingleChildScrollView(
                     child: Column(children: [
                       TextField(
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 20),
+                        style: const TextStyle(fontSize: 20),
                         decoration: const InputDecoration(
-                            hintText: 'Title...',
-                            border: InputBorder.none,
-                            hintStyle: TextStyle(color: Colors.white70)),
+                          hintText: 'Title...',
+                          border: InputBorder.none,
+                        ),
                         controller: titleController,
                       ),
                       const Padding(padding: EdgeInsets.all(10)),
                       TextField(
-                          style: const TextStyle(color: Colors.white),
                           decoration: const InputDecoration(
-                              hintText: 'Note...',
-                              border: InputBorder.none,
-                              hintStyle: TextStyle(color: Colors.white70)),
+                            hintText: 'Note...',
+                            border: InputBorder.none,
+                          ),
                           controller: textController,
                           maxLines: 9000)
                     ]),

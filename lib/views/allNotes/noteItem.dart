@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../theme/SharedPreferences.dart';
 
 class NoteItem extends StatelessWidget {
   const NoteItem({
@@ -18,17 +21,19 @@ class NoteItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeChange = Provider.of<DarkThemeProvider>(context);
     return GestureDetector(
         onTap: onPress,
         onLongPressEnd: onLongPressEnd,
         child: Card(
-            color: Colors.black26,
+            color: themeChange.darkTheme ? Colors.black26 : Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: const BorderRadius.all(
                 Radius.circular(12.0),
               ),
               side: BorderSide(
-                  color: isSelected ? Colors.orange : Colors.grey, width: 3),
+                  color: isSelected ? Colors.orange : Colors.transparent,
+                  width: 3),
             ),
             child: Align(
                 alignment: Alignment.topLeft,
@@ -40,14 +45,9 @@ class NoteItem extends StatelessWidget {
                     children: <Widget>[
                       Text(title,
                           textAlign: TextAlign.start,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)),
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
                       const Padding(padding: EdgeInsets.all(8)),
-                      Text(text,
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(color: Colors.white),
-                          maxLines: 50),
+                      Text(text, textAlign: TextAlign.start, maxLines: 50),
                     ],
                   ),
                 ))));
