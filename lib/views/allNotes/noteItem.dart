@@ -30,16 +30,26 @@ class NoteItem extends StatelessWidget {
               side: BorderSide(
                   color: isSelected ? Colors.orange : Colors.grey, width: 3),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: <Widget>[
-                  Text(title, style: const TextStyle(color: Colors.white)),
-                  Text(text,
-                      style: const TextStyle(color: Colors.white),
-                      maxLines: 50),
-                ],
-              ),
-            )));
+            child: Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(title,
+                          textAlign: TextAlign.start,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                      const Padding(padding: EdgeInsets.all(8)),
+                      Text(text,
+                          textAlign: TextAlign.start,
+                          style: const TextStyle(color: Colors.white),
+                          maxLines: 50),
+                    ],
+                  ),
+                ))));
   }
 }

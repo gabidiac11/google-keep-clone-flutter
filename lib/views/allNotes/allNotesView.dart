@@ -1,5 +1,12 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import 'package:untitled2/models.dart';
+import 'package:untitled2/store/actions.dart';
 import 'package:untitled2/views/allNotes/navBar.dart';
 import 'package:untitled2/views/allNotes/navBarSelection.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -13,74 +20,13 @@ class AllNotesView extends StatefulWidget {
 }
 
 class _AllNotesViewState extends State<AllNotesView> {
-  List<Map<String, dynamic>> notes = [
-    {
-      'id': 1,
-      'title': "Datorii (de recuperat)",
-      'text':
-          "\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
-    },
-    {
-      'id': 2,
-      'title': "Datorii (de recuperat)",
-      'text':
-          "\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
-    },
-    {
-      'id': 3,
-      'title': "Datorii (de recuperat)",
-      'text':
-          "\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
-    },
-    {
-      'id': 4,
-      'title': "Datorii1 (de recuperat)",
-      'text':
-          "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
-    },
-    {
-      'id': 5,
-      'title': "Datorii2 (de recuperat)",
-      'text':
-          "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
-    },
-    {
-      'id': 6,
-      'title': "Datorii3 (de recuperat)",
-      'text':
-          "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
-    },
-    {
-      'id': 7,
-      'title': "Datorii (de recuperat)",
-      'text':
-          "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
-    },
-    {
-      'id': 8,
-      'title': "Datorii (de recuperat)",
-      'text':
-          "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
-    },
-    {
-      'id': 9,
-      'title': "Datorii (de recuperat)",
-      'text':
-          "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
-    },
-    {
-      'id': 10,
-      'title': "Datorii (de recuperat)",
-      'text':
-          "\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n\n mai2022 | chirie 1503/2 \n mai2022 | mouse 45 \n mai2022 | factura energie 444.14 / 2 \n mai2022| cămătărie 152. 5 \n"
-    }
-  ];
-
   var selectionModeActive = false;
   var selectedIds = {};
   var isListLayout = false;
   var searchTxt = "";
   TextEditingController searchController = TextEditingController();
+
+  var isLoadingList = false;
 
   @override
   void dispose() {
@@ -88,16 +34,15 @@ class _AllNotesViewState extends State<AllNotesView> {
     super.dispose();
   }
 
-  List<Map<String, dynamic>> getListFiltered() {
+  List<NoteItemType> getListFiltered(notes) {
     return searchTxt == ""
         ? notes
         : notes.where((i) {
-      return ['title', 'text'].any((property) {
-        return (i[property] is String) &&
-            i[property] != null &&
-            (i[property] as String).toLowerCase().contains(searchTxt);
-      });
-    }).toList();
+            return [i.title, i.text].any((value) {
+              return (value is String) &&
+                  value.toLowerCase().contains(searchTxt);
+            });
+          }).toList();
   }
 
   @override
@@ -112,46 +57,62 @@ class _AllNotesViewState extends State<AllNotesView> {
 
   @override
   Widget build(BuildContext context) {
-    var notesFiltered = getListFiltered();
-
-    return Scaffold(
-      appBar: selectionModeActive
-          ? NavBarSelection(
-              selectedIds.keys.length, onDeleteSelected, onCancelSelection)
-          : MyAppBar(isListLayout, setIsListLayout, searchController),
-      backgroundColor: Colors.grey,
-      body: SingleChildScrollView(
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(5, 25, 5, 22),
-            child: notesFiltered.isEmpty
-                ? const Text("No item.")
-                : StaggeredGrid.count(
-                    crossAxisCount: isListLayout
-                        ? 1
-                        : determineItemsPerRow(
-                            MediaQuery.of(context).size.width),
-                    mainAxisSpacing: 2,
-                    crossAxisSpacing: 4,
-                    children: notesFiltered
-                        .map((e) => NoteItem(
-                              title: e['title'],
-                              onPress: () => onPressNote(e['id']),
-                              onLongPressEnd: (d) => onLongPressEnd(e['id']),
-                              isSelected: selectedIds[e['id']] == true,
-                              text: e['text'],
-                            ))
-                        .toList(),
-                  ),
-          )
-        ]),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, '/second'),
-        tooltip: 'Add note',
-        child: const Icon(Icons.add),
-      ),
-    );
+    return StoreConnector<AppState, NotesViewModel>(
+        onInit: (store) {
+          Timer(const Duration(seconds: 1), () {
+            setState(() {
+              isLoadingList = true;
+            });
+            Timer(const Duration(seconds: 3), () {
+              setState(() {
+                isLoadingList = false;
+              });
+            });
+          });
+        },
+        converter: (store) => NotesViewModel.fromStore(context, store),
+        builder: (context, model) => Scaffold(
+              appBar: selectionModeActive
+                  ? NavBarSelection(selectedIds.keys.length,
+                      () => onDeleteSelected(model), onCancelSelection)
+                  : MyAppBar(isListLayout, setIsListLayout, searchController),
+              backgroundColor: Colors.grey,
+              body: SingleChildScrollView(
+                child: Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 25, 5, 22),
+                    child: isLoadingList
+                        ? const Text("Loading...")
+                        : getListFiltered(model.notes).isEmpty
+                            ? const Text("No item.")
+                            : StaggeredGrid.count(
+                                crossAxisCount: isListLayout
+                                    ? 1
+                                    : determineItemsPerRow(
+                                        MediaQuery.of(context).size.width),
+                                mainAxisSpacing: 2,
+                                crossAxisSpacing: 4,
+                                children: getListFiltered(model.notes)
+                                    .map((item) => NoteItem(
+                                          title: item.title,
+                                          onPress: () => onPressNote(item),
+                                          onLongPressEnd: (d) =>
+                                              onLongPressEnd(item.id),
+                                          isSelected:
+                                              selectedIds[item.id] == true,
+                                          text: item.text,
+                                        ))
+                                    .toList(),
+                              ),
+                  )
+                ]),
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () => Navigator.pushNamed(context, '/addOrEdit'),
+                tooltip: 'Add note',
+                child: const Icon(Icons.add),
+              ),
+            ));
   }
 
   int determineItemsPerRow(double width) {
@@ -161,7 +122,7 @@ class _AllNotesViewState extends State<AllNotesView> {
     return (width / 175).floor();
   }
 
-  onLongPressEnd(itemId) {
+  onLongPressEnd(String itemId) {
     setState(() {
       if (!selectionModeActive) {
         selectionModeActive = true;
@@ -174,11 +135,14 @@ class _AllNotesViewState extends State<AllNotesView> {
     });
   }
 
-  onDeleteSelected() {
+  onDeleteSelected(NotesViewModel model) {
+    //TODO: delete from db
+    var notes = model.notes
+        .where((element) => selectedIds[element.id] != true)
+        .toList();
+    model.setNotes(notes);
+
     setState(() {
-      //TODO: delete from db
-      notes =
-          notes.where((element) => selectedIds[element['id']] != true).toList();
       selectedIds = {};
       selectionModeActive = false;
     });
@@ -191,11 +155,12 @@ class _AllNotesViewState extends State<AllNotesView> {
     });
   }
 
-  onPressNote(itemId) {
+  onPressNote(NoteItemType item) {
     if (!selectionModeActive) {
-      //TODO: navigate to edit
+      Navigator.pushNamed(context, '/addOrEdit', arguments: item);
       return;
     }
+    var itemId = item.id;
     setState(() {
       if (selectedIds[itemId] == true) {
         selectedIds.remove(itemId);
@@ -205,7 +170,7 @@ class _AllNotesViewState extends State<AllNotesView> {
     });
   }
 
-  setIsListLayout(value) {
+  setIsListLayout(bool value) {
     setState(() {
       isListLayout = value;
     });
