@@ -12,23 +12,34 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'store/reducer.dart';
 import 'package:untitled2/store/reducer.dart';
 import 'package:provider/provider.dart';
+import 'package:redux_thunk/redux_thunk.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  if(!kIsWeb) {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  final persistor = Persistor<AppState>(
-    storage: FlutterStorage(),
-    serializer: JsonSerializer<AppState>(AppState.fromJson),
-  );
+    final persistor = Persistor<AppState>(
+      storage: FlutterStorage(),
+      serializer: JsonSerializer<AppState>(AppState.fromJson),
+    );
 
-  final initialState = await persistor.load();
+    final initialState = await persistor.load();
 
-  final Store<AppState> store = Store<AppState>(
-    reducer,
-    initialState: initialState ?? AppState.genInitialState(),
-    middleware: [persistor.createMiddleware()],
-  );
-  runApp(MyApp(store));
+    final Store<AppState> store = Store<AppState>(
+      reducer,
+      initialState: initialState ?? AppState.genInitialState(),
+      middleware: [persistor.createMiddleware()],
+    );
+    runApp(MyApp(store));
+  } else {
+    final Store<AppState> store = Store<AppState>(
+      reducer,
+      initialState: AppState.genInitialState(),
+      middleware: [thunkMiddleware],
+    );
+    runApp(MyApp(store));
+  }
 }
 
 class MyApp extends StatefulWidget {

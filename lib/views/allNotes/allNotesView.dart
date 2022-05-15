@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
 import 'package:untitled2/models.dart';
 import 'package:untitled2/store/actions.dart';
 import 'package:untitled2/views/allNotes/navBar.dart';
