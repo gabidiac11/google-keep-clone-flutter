@@ -131,7 +131,6 @@ class _AllNotesViewState extends State<AllNotesView> {
   }
 
   onDeleteSelected(NotesViewModel model) {
-    //TODO: delete from db
     var notes = model.notes
         .where((element) => selectedIds[element.id] != true)
         .toList();

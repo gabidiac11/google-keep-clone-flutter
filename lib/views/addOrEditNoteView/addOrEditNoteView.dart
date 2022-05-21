@@ -39,6 +39,7 @@ class _AddOrEditNoteViewState extends State<AddOrEditNoteView> {
 
   @override
   void dispose() {
+    //find and update existing note
     if (id != null && widget.model.notes.any((el) => el.id == id)) {
       widget.model.setNotes(widget.model.notes.map((el) {
         if (el.id == id) {
@@ -46,6 +47,7 @@ class _AddOrEditNoteViewState extends State<AddOrEditNoteView> {
         }
         return el;
       }).toList());
+      //if at least one of the items title and the text are not empty -> add a new note
     } else if ([titleController.text, textController.text]
         .any((txt) => txt != "")) {
       widget.model.setNotes([
